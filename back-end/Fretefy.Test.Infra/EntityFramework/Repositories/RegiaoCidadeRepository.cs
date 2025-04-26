@@ -34,6 +34,11 @@ namespace Fretefy.Test.Infra.EntityFramework.Repositories
             return await _dbContext.RegiaoCidade.Where(rc => idsCidades.Contains(rc.CidadeId)).AsNoTracking().ToListAsync();
         }
         
+        public async Task<IEnumerable<RegiaoCidade>> ListAsync()
+        {
+            return await _dbContext.RegiaoCidade.AsNoTracking().ToListAsync();
+        }
+        
 
         protected void Dispose(bool disposing)
         {

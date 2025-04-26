@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Fretefy.Test.Domain.Interfaces;
 using Fretefy.Test.Domain.ViewModels.Request;
+using Fretefy.Test.Domain.ViewModels.Response;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -20,7 +21,7 @@ namespace Fretefy.Test.WebApi.Controllers
         public async Task<IActionResult> CreateRegiao([FromBody] RegiaoPostViewModel regiaoPost)
         {
             if(!ModelState.IsValid)
-                return StatusCode(400);
+                return StatusCode(400, new ErrorViewModel(ModelState));
             
             var regiao = await _regiaoService.InsertAsync(regiaoPost);
             return StatusCode(201, regiao);
@@ -47,7 +48,7 @@ namespace Fretefy.Test.WebApi.Controllers
         public async Task<IActionResult> UpdateAsync([FromBody] RegiaoUpdateViewModel regiaoUpdate)
         {
             if(!ModelState.IsValid)
-                return StatusCode(400);
+                return StatusCode(400, new ErrorViewModel(ModelState));
             var regiao = await _regiaoService.UpdateAsync(regiaoUpdate);
 
             return StatusCode(200, regiao);

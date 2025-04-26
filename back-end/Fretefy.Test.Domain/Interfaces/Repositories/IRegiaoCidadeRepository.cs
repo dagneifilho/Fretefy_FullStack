@@ -11,6 +11,7 @@ namespace Fretefy.Test.Domain.Interfaces.Repositories
     {
         Task<IEnumerable<RegiaoCidade>> InsertManyAsync(IEnumerable<RegiaoCidade> regioesCidades);
         Task<IEnumerable<RegiaoCidade>> GetByIdsCidades(IEnumerable<Guid> idsCidades);
+        Task<IEnumerable<RegiaoCidade>> ListAsync();
         Task DeleteByRegiaoIdAsync(Guid regiaoId);        
     }
 

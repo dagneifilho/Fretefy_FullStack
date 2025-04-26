@@ -3,6 +3,7 @@ using Fretefy.Test.Domain.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Fretefy.Test.WebApi.Controllers
 {
@@ -36,6 +37,12 @@ namespace Fretefy.Test.WebApi.Controllers
         public IActionResult Get(Guid id)
         {
             var cidades = _cidadeService.Get(id);
+            return Ok(cidades);
+        }
+        [HttpGet("disponiveis")]
+        public async Task<IActionResult> CidadesDisponiveisAsync()
+        {
+            var cidades = await _cidadeService.GetDisponiveisAsync();
             return Ok(cidades);
         }
     }

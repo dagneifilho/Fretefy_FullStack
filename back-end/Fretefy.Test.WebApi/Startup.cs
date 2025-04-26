@@ -4,6 +4,7 @@ using Fretefy.Test.Domain.Services;
 using Fretefy.Test.Infra.EntityFramework;
 using Fretefy.Test.Infra.EntityFramework.Repositories;
 using Fretefy.Test.WebApi.Configurations;
+using Fretefy.Test.WebApi.Middleware;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -23,10 +24,25 @@ namespace Fretefy.Test.WebApi
             {
                 options.UseSqlite("Data Source=Data\\Test.db");
             });
+             services.AddCors(options =>
+                {
+                    options.AddPolicy("AllowAll", builder =>
+                    {
+                        builder
+                            .AllowAnyOrigin()
+                            .AllowAnyMethod()
+                            .AllowAnyHeader();
+                    });
+                });
 
             services.ConfigureDependencyInjection();
             services.AddMvc()
                 .SetCompatibilityVersion(Microsoft.AspNetCore.Mvc.CompatibilityVersion.Latest);
+            services.AddControllers()
+                .ConfigureApiBehaviorOptions(options =>
+                {
+                    options.SuppressModelStateInvalidFilter = true;
+                });
         }
 
 
@@ -38,6 +54,10 @@ namespace Fretefy.Test.WebApi
             }
 
             app.UseRouting();
+            
+            app.UseMiddleware<ExceptionHandlerMiddleware>();
+            app.UseCors("AllowAll");
+            
 
             app.UseEndpoints(endpoints =>
             {

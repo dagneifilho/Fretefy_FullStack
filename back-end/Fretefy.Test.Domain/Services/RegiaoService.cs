@@ -36,7 +36,7 @@ namespace Fretefy.Test.Domain.Services
             if(cidadesDb.Count() < regiaoPost.CidadesIds.Count())
             {
                 var cidadesFaltantes = regiaoPost.CidadesIds.Where(c => !idsCidadesDb.Contains(c)).ToList();
-                throw new CidadeInexistenteException(cidadesFaltantes);
+                throw new CidadeInexistenteException(cidadesFaltantes, "CidadesIds");
             }
 
             var regioesCadastradas = await _regiaoCidadeRepository.GetByIdsCidades(regiaoPost.CidadesIds);
@@ -44,14 +44,14 @@ namespace Fretefy.Test.Domain.Services
             if(regioesCadastradas.Count() > 0)
             {
                 var idsCidadesCadastradas = regioesCadastradas.Select(rc => rc.CidadeId);
-                throw new CidadesJaCadastradasException(idsCidadesCadastradas);
+                throw new CidadesJaCadastradasException(idsCidadesCadastradas, "CidadesIds");
             }
 
 
             var regiaoDb = await _regiaoRepository.GetByNomeAsync(regiaoPost.Nome);
             
             if(regiaoDb != null)
-                throw new RegiaoExistenteException();
+                throw new RegiaoExistenteException("Nome");
 
             var regiao = new Regiao(regiaoPost.Nome);
             
@@ -92,7 +92,7 @@ namespace Fretefy.Test.Domain.Services
         {
             var regiaoDb = await _regiaoRepository.GetByIdAsync(regiaoUpdate.Id, true);
             if(regiaoDb == null)
-                throw new RegiaoInexistenteException(regiaoUpdate.Id);
+                throw new RegiaoInexistenteException(regiaoUpdate.Id, "Id");
 
 
             var cidadesDb = await _cidadeRepository.ListByIdsCidades(regiaoUpdate.CidadesIds);
@@ -101,7 +101,7 @@ namespace Fretefy.Test.Domain.Services
             if(cidadesDb.Count() < regiaoUpdate.CidadesIds.Count())
             {
                 var cidadesFaltantes = regiaoUpdate.CidadesIds.Where(c => !idsCidadesDb.Contains(c)).ToList();
-                throw new CidadeInexistenteException(cidadesFaltantes);
+                throw new CidadeInexistenteException(cidadesFaltantes, "CidadesIds");
             }
 
             var regioesCadastradas = await _regiaoCidadeRepository.GetByIdsCidades(regiaoUpdate.CidadesIds);
@@ -110,7 +110,7 @@ namespace Fretefy.Test.Domain.Services
             if(regioesCadastradas.Count() > 0)
             {
                 var idsCidadesCadastradas = regioesCadastradas.Select(rc => rc.CidadeId);
-                throw new CidadesJaCadastradasException(idsCidadesCadastradas);
+                throw new CidadesJaCadastradasException(idsCidadesCadastradas, "CidadesIds");
             }
 
 
@@ -135,7 +135,7 @@ namespace Fretefy.Test.Domain.Services
         {
             var regiaoDb = await _regiaoRepository.GetByIdAsync(id, true);
             if(regiaoDb == null)
-                throw new RegiaoInexistenteException(id);
+                throw new RegiaoInexistenteException(id, "Id");
             regiaoDb.Ativa = !regiaoDb.Ativa;
             regiaoDb = await _regiaoRepository.UpdateAsync(regiaoDb);
 
