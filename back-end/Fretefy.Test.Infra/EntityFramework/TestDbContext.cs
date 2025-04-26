@@ -1,4 +1,6 @@
-﻿using Fretefy.Test.Infra.EntityFramework.Mappings;
+﻿using System.Resources;
+using Fretefy.Test.Domain.Entities;
+using Fretefy.Test.Infra.EntityFramework.Mappings;
 using Microsoft.EntityFrameworkCore;
 
 namespace Fretefy.Test.Infra.EntityFramework
@@ -9,6 +11,9 @@ namespace Fretefy.Test.Infra.EntityFramework
         {
 
         }
+        public DbSet<Cidade> Cidade {get;set;}
+        public DbSet<Regiao> Regiao {get;set;}
+        public DbSet<RegiaoCidade> RegiaoCidade {get;set;}
 
         public TestDbContext(DbContextOptions<TestDbContext> options)
             : base(options)
@@ -24,6 +29,8 @@ namespace Fretefy.Test.Infra.EntityFramework
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfiguration(new CidadeMap());
+            modelBuilder.ApplyConfiguration(new RegiaoMap());
+            modelBuilder.ApplyConfiguration(new RegiaoCidadeMap());
         }
     }
 }

@@ -3,6 +3,7 @@ using Fretefy.Test.Domain.Interfaces.Repositories;
 using Fretefy.Test.Domain.Services;
 using Fretefy.Test.Infra.EntityFramework;
 using Fretefy.Test.Infra.EntityFramework.Repositories;
+using Fretefy.Test.WebApi.Configurations;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -23,22 +24,11 @@ namespace Fretefy.Test.WebApi
                 options.UseSqlite("Data Source=Data\\Test.db");
             });
 
-            ConfigureInfraService(services);
-            ConfigureDomainService(services);
-
+            services.ConfigureDependencyInjection();
             services.AddMvc()
                 .SetCompatibilityVersion(Microsoft.AspNetCore.Mvc.CompatibilityVersion.Latest);
         }
 
-        private void ConfigureDomainService(IServiceCollection services)
-        {
-            services.AddScoped<ICidadeService, CidadeService>();
-        }
-
-        private void ConfigureInfraService(IServiceCollection services)
-        {
-            services.AddScoped<ICidadeRepository, CidadeRepository>();
-        }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
