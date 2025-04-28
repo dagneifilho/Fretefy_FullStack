@@ -21,6 +21,10 @@ namespace Fretefy.Test.Domain.ViewModels.Request
                 yield return new ValidationResult("O campo Nome deve conter no máximo 1024 caracteres.",new List<string>{"Nome"});
             if(CidadesIds == null || CidadesIds.Count() == 0)
                 yield return new ValidationResult("É necessário informar ao menos uma cidade.",new List<string>{"CidadesId"});
+            var possuiCidadesDuplicadas = CidadesIds.ToList().GroupBy(i => i).Any(g => g.Count() > 1);
+            if(possuiCidadesDuplicadas)
+                yield return new ValidationResult("As cidades devem ser diferentes entre si.", new List<string>{"CidadesId"});
+        
         }
     }
 

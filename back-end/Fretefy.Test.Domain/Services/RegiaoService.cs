@@ -70,7 +70,7 @@ namespace Fretefy.Test.Domain.Services
             if(regioesDb.Count() == 0)
                 return new List<RegiaoListedViewModel>();
 
-            var regioes = regioesDb.Select(r => new RegiaoListedViewModel(r.Id, r.Nome, r.Ativa));
+            var regioes = regioesDb.Select(r => new RegiaoListedViewModel(r.Id, r.Nome, r.Ativa)).ToList();
 
             return regioes;
         }

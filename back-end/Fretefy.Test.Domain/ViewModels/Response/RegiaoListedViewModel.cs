@@ -16,7 +16,7 @@ namespace Fretefy.Test.Domain.ViewModels.Response
         }
         public Guid Id {get;set;}
         public string Nome {get;set;}
-        bool Ativa {get;set;}
+        public bool Ativa {get;set;}
 
     }
 
