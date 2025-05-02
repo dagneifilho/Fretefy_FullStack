@@ -1,86 +1,77 @@
-<!-- 
-<div class="modal fade" id="cadastroModal" tabindex="-1" aria-labelledby="cadastroModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="cadastroModalLabel">{{ regiaoCadastro.Id ? 'Editar' : 'Cadastrar' }} Região</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
-      </div>
-      <div class="modal-body">
-        <div class="mb-3">
-          <label for="nomeRegiao" class="form-label">Nome da Região</label>
-          <input type="text" required class="form-control" id="nomeRegiao" [(ngModel)]="regiaoCadastro.Nome" placeholder="Digite o nome da região">
-        </div>
-        <input type="hidden" id="idRegiao"[(ngModel)]="regiaoCadastro.Id"> 
-        <div *ngFor="let cidade of regiaoCadastro.Cidades; let i = index" class="mb-3">
-          <div class="d-flex align-items-center">
-            <div class="flex-grow-1">
-              <label for="cidade-{{i}}" class="form-label">Cidade {{i + 1}}</label>
-              <select class="form-select cidade-form" >
-                <option value="{{cidade.id ? cidade.id : null}}">
-                  {{ cidade.id ? cidade.nome + ' - ' + cidade.uf : 'Selecione uma cidade' }}
-                </option>
-                <option *ngFor="let cidadeDisponivel of cidadesDisponiveis" value="{{cidadeDisponivel.id}}">
-                  {{ cidadeDisponivel.nome }} ({{ cidadeDisponivel.uf }})
-                </option>
-              </select>
-            </div>
-            <button type="button" class="btn btn-danger btn-sm ms-2 mt-4" (click)="removerCidade(i)">
-              &times;
-            </button>
-          </div>
-        </div>
+<form [formGroup]="form" (ngSubmit)="onSubmit()" class="container mt-4">
+  <!-- Nome da Região -->
+  <div class="mb-3">
+    <label class="form-label">Nome da Região *</label>
+    <input 
+      type="text" 
+      formControlName="nome" 
+      class="form-control"
+      [class.is-invalid]="form.get('nome')?.invalid && (form.get('nome')?.dirty || form.get('nome')?.touched)"
+    >
+    <div *ngIf="form.get('nome')?.invalid && (form.get('nome')?.dirty || form.get('nome')?.touched)" class="invalid-feedback">
+      Nome é obrigatório
+    </div>
+  </div>
 
-
-        <button type="button" class="btn btn-secondary" (click)="adicionarCidade()">Adicionar Cidade</button>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-        <button type="button" class="btn btn-primary" (click)="salvar()">Salvar</button>
+  <div formArrayName="cidades">
+    <div class="mb-3">
+      <label class="form-label">Cidades *</label>
+      
+      <div *ngFor="let cidadeGroup of cidades.controls; let i = index" [formGroupName]="i" class="mb-3">
+        <div class="input-group">
+          <select 
+            formControlName="cidadeId" 
+            class="form-select"
+            
+          >
+            <option value="" disabled>Selecione uma cidade</option>
+            <option 
+              *ngFor="let cidade of cidadesDisponiveis" 
+              [ngValue]="cidade.id">
+              {{ cidade.nome }} - {{ cidade.uf }}
+            </option>
+          </select>
+          
+          <button 
+            type="button" 
+            (click)="removerCidade(i)" 
+            class="btn btn-outline-danger"
+            [disabled]="cidades.controls.length === 1"
+          >
+            Remover
+          </button>
+        </div>
+        
+        <div 
+          *ngIf="cidadeGroup.get('cidadeId')?.invalid && (cidadeGroup.get('cidadeId')?.dirty || cidadeGroup.get('cidadeId')?.touched)" 
+          class="invalid-feedback d-block"
+        >
+          Selecione uma cidade
+        </div>
       </div>
     </div>
   </div>
-</div> -->
-<div class="container mt-4">
-    <h2>{{ regiaoCadastro.Id ? 'Editar' : 'Cadastrar' }} Região</h2>
-  
-    <form [formGroup]="form" (ngSubmit)="">
-      <div class="modal-header">
-        <h5 class="modal-title" id="cadastroModalLabel">{{ regiaoCadastro.Id ? 'Editar' : 'Cadastrar' }} Região</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
-      </div>
-  
-      <div class="modal-body">
-        <div class="mb-3">
-          <label for="Nome" class="form-label">Nome da Região</label>
-          <input type="text" id="Nome" class="form-control" formControlName="Nome" placeholder="Digite o nome da região">
-        </div>
-        
-     
-        <div formArrayName="Cidades" *ngFor="let cidadeControl of cidadesFormArray.controls; let i = index" class="mb-3">
-          <div class="d-flex align-items-center">
-            <div class="flex-grow-1">
-              <label for="cidade-{{i}}" class="form-label">Cidade {{i + 1}}</label>
-              <select class="form-select" [formControlName]="i">
-                <option value="">Selecione uma cidade</option>
-                <option *ngFor="let cidadeDisponivel of cidadesDisponiveis" [value]="cidadeDisponivel.id">
-                  {{ cidadeDisponivel.nome }} ({{ cidadeDisponivel.uf }})
-                </option>
-              </select>
-            </div>
-            <button type="button" class="btn btn-danger btn-sm ms-2 mt-4" (click)="removerCidade(i)">
-              &times;
-            </button>
-          </div>
-        </div>
-        <button type="button" class="btn btn-secondary" (click)="adicionarCidade()">Adicionar Cidade</button>
-      </div>
-  
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-        <button type="submit" class="btn btn-primary" [disabled]="regiaoForm.invalid">Salvar</button>
-      </div>
-    </form>
-  </div>
 
- 
+  <!-- Botão Adicionar Cidade -->
+  <button 
+    type="button" 
+    (click)="adicionarCidade()" 
+    class="btn btn-outline-primary mb-4"
+  >
+    <i class="bi bi-plus-circle"></i> Adicionar Cidade
+  </button>
+
+  <!-- Botões de Ação -->
+  <div class="d-flex gap-2">
+    <button type="submit" class="btn btn-success">
+      <i class="bi bi-check-circle"></i> Salvar
+    </button>
+    <button 
+      type="button" 
+      (click)="router.navigate(['/regiao'])" 
+      class="btn btn-outline-secondary"
+    >
+      <i class="bi bi-x-circle"></i> Cancelar
+    </button>
+  </div>
+</form>

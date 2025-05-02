@@ -3,10 +3,7 @@ import { Router } from '@angular/router';
 import * as bootstrap from 'bootstrap';
 import { ToastrService } from 'ngx-toastr';
 import { Observable } from 'rxjs';
-import { Cidade } from 'src/app/models/cidade.model';
-import { RegiaoInsert } from 'src/app/models/regiao-insert.model';
 import { RegiaoListed } from 'src/app/models/regiao-listed.model';
-import { RegiaoUpdate } from 'src/app/models/regiao-update.model';
 import { Regiao } from 'src/app/models/regiao.model';
 import { CidadeService } from 'src/app/services/cidade.service';
 import { RegiaoService } from 'src/app/services/regiao.service';
@@ -22,7 +19,6 @@ export class RegiaoComponent implements OnInit {
   regiaoVisualizada : Regiao|null = null;
 
   constructor(private regiaoService : RegiaoService, 
-              private cidadeService: CidadeService,
               private toastrService: ToastrService,
               private router: Router) { }
 
