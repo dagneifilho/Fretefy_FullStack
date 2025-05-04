@@ -1,6 +1,8 @@
 ﻿using Fretefy.Test.Domain.Entities;
 using Fretefy.Test.Domain.Interfaces;
 using Fretefy.Test.Domain.Interfaces.Repositories;
+using Fretefy.Test.Domain.ViewModels.Response;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,11 +15,13 @@ namespace Fretefy.Test.Domain.Services
     {
         private readonly ICidadeRepository _cidadeRepository;
         private readonly IRegiaoCidadeRepository _regiaoCidadeRepository;
+        private readonly IRegiaoRepository _regiaoRepository;
 
-        public CidadeService(ICidadeRepository cidadeRepository, IRegiaoCidadeRepository regiaoCidadeRepository)
+        public CidadeService(ICidadeRepository cidadeRepository, IRegiaoCidadeRepository regiaoCidadeRepository, IRegiaoRepository regiaoRepository)
         {
             _cidadeRepository = cidadeRepository;
             _regiaoCidadeRepository = regiaoCidadeRepository;
+            _regiaoRepository = regiaoRepository;
 
         }
 
@@ -37,6 +41,29 @@ namespace Fretefy.Test.Domain.Services
 
             return cidades;
         }
+        
+        public IEnumerable<Cidade> Query(string terms)
+        {
+            return _cidadeRepository.Query(terms);
+        }
+
+        public async Task<IEnumerable<CidadeDetailedViewModel>> GetReportAsync()
+        {
+            var regioesCidades= await _regiaoCidadeRepository.ListAsync();     
+            var cidades = _cidadeRepository.List(); 
+            var rtn = new List<CidadeDetailedViewModel>();
+            foreach(var regiaoCidade in regioesCidades)
+            {
+                var cidade = cidades.FirstOrDefault(c => c.Id == regiaoCidade.CidadeId);
+                var regiao = await _regiaoRepository.GetByIdAsync(regiaoCidade.RegiaoId);
+
+                rtn.Add(new CidadeDetailedViewModel(cidade.Nome, cidade.UF, regiao.Nome ?? string.Empty));
+            }
+
+            rtn.GroupBy(c => c.NomeRegiao);
+
+            return rtn;
+        }
 
         public IEnumerable<Cidade> List()
         {
@@ -48,9 +75,17 @@ namespace Fretefy.Test.Domain.Services
             return _cidadeRepository.ListByUf(uf);
         }
 
-        public IEnumerable<Cidade> Query(string terms)
+        protected virtual void Dispose(bool disposing)
         {
-            return _cidadeRepository.Query(terms);
+            _cidadeRepository.Dispose();
+            _regiaoCidadeRepository.Dispose();
+            _regiaoRepository.Dispose();
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
     }
 }

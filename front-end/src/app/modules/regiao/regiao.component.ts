@@ -64,5 +64,8 @@ export class RegiaoComponent implements OnInit {
       }
     });
   }
+  baixarRelatorio() : void {
+    window.open('http://localhost:5000/api/cidade/relatorio', '_blank');
+  }
 
 }

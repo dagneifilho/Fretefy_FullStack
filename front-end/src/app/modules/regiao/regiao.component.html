@@ -2,6 +2,7 @@
   <div class="header d-flex justify-content-between align-items-center mb-3">
     <h2>Regiões</h2>
     <button class="btn btn-primary btn-cadastrar" (click)="cadastrarRegiao()">+ Cadastrar</button>
+    <button class="btn btn-secondary btn-download" (click)="baixarRelatorio()">Baixar Relatório</button>
   </div>
   <div *ngIf="(regioes$ | async)?.length > 0; else noRegioes">
     <table class="table table-striped tabela-regioes">

@@ -1,8 +1,12 @@
-﻿using Fretefy.Test.Domain.Entities;
+﻿using CsvHelper;
+using Fretefy.Test.Domain.Entities;
 using Fretefy.Test.Domain.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace Fretefy.Test.WebApi.Controllers
@@ -44,6 +48,22 @@ namespace Fretefy.Test.WebApi.Controllers
         {
             var cidades = await _cidadeService.GetDisponiveisAsync();
             return Ok(cidades);
+        }
+
+        [HttpGet("relatorio")]
+        public async Task<IActionResult> Relatorio() 
+        {
+            var cidades = await _cidadeService.GetReportAsync();
+            string nomeArquivo = "cidades"+DateTime.Now.Ticks+".csv";
+            using (var ms = new MemoryStream())
+            using (var sw = new StreamWriter(ms, Encoding.UTF8))
+            using (var csvWriter = new CsvWriter(sw, CultureInfo.InvariantCulture))
+            {
+                csvWriter.WriteRecords(cidades);
+                sw.Flush();
+
+                return File(ms.ToArray(), "text/csv", nomeArquivo);
+            }
         }
     }
 }

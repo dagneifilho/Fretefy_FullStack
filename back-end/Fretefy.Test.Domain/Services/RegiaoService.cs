@@ -156,6 +156,8 @@ namespace Fretefy.Test.Domain.Services
         protected virtual void Dispose(bool disposing)
         {
             _cidadeRepository.Dispose();
+            _regiaoCidadeRepository.Dispose();
+            _regiaoRepository.Dispose();
         }
         public void Dispose()
         {
